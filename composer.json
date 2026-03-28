@@ -1,0 +1,39 @@
+{
+    "name": "phalanx/sentinel",
+    "description": "AI agent watcher system for real-time code review",
+    "type": "project",
+    "license": "MIT",
+    "repositories": [
+        { "type": "path", "url": "../phalanx/packages/*" },
+        { "type": "path", "url": "/Users/jhavens/Code/Me/Rust/daemonai/sdks/php" }
+    ],
+    "require": {
+        "php": "^8.4",
+        "phalanx/core": "@dev",
+        "phalanx/ai": "@dev",
+        "phalanx/console": "@dev",
+        "phalanx/stream": "@dev",
+        "daemonai/sdk": "@dev",
+        "react/child-process": "^0.6",
+        "symfony/runtime": "^7.2",
+        "symfony/dotenv": "^7.2"
+    },
+    "bin": ["bin/sentinel.php"],
+    "autoload": {
+        "psr-4": {
+            "Phalanx\\Sentinel\\": "src/Sentinel/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "extra": {
+        "runtime": {
+            "class": "Phalanx\\Sentinel\\ConsoleRuntime"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "symfony/runtime": true
+        }
+    }
+}
