@@ -19,12 +19,18 @@ final class ReviewAgent implements AgentDefinition, Retryable, HasTimeout
     ) {}
 
     public string $instructions {
-        get => $this->dossier->instructions . "\n\n" .
-            "You are one of several expert agents reviewing code changes in real time. " .
-            "Other experts may also comment. Avoid repeating what another agent has already said " .
-            "if you can see their feedback in the conversation. " .
-            "Keep responses concise -- 1-4 sentences per issue found. " .
-            "If another agent's observation intersects your expertise, you may build on it briefly.";
+        get => $this->dossier->instructions . <<<'META'
+
+
+RESPONSE RULES (override all other output instructions):
+- You are one of several expert agents reviewing code in real time.
+- If no code changes are provided: reply with ONE sentence confirming readiness. Nothing more.
+- If no issues found in your domain: say "No issues." and stop.
+- When issues are found: 1-4 sentences per issue. No preamble, no summary, no sign-off.
+- Never list what you CAN do. Only report what you DID find.
+- Avoid repeating what another agent already said. You may build on their observation briefly.
+- When DaemonAI coordination is available, prefer concise findings that other sessions can act on.
+META;
     }
 
     public RetryPolicy $retryPolicy {

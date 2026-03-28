@@ -60,7 +60,6 @@ final class Coordinator
                 continue;
             }
 
-            $this->renderer->agentFeedback($agentName, $run->color, $text);
             $this->lastRoundFeedback[$agentName] = $text;
             $this->appendToConversation($agentName, $changeSummary, $text);
             $this->bridge?->broadcast($agentName, $text, $triggerSummary);
@@ -85,7 +84,6 @@ final class Coordinator
                 continue;
             }
 
-            $this->renderer->agentFeedback($agentName, $run->color, $text);
             $this->appendToConversation($agentName, $prompt, $text);
             $this->bridge?->broadcast($agentName, $text, 'human: ' . $message);
         }

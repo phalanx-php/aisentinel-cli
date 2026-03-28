@@ -131,7 +131,7 @@ final class ConsoleRenderer
     {
         $c = self::COLORS[$color] ?? self::FG_WHITE;
         $elapsed = $this->elapsed();
-        $this->write(self::DIM . "  [{$elapsed}] " . self::RESET . $c . self::BOLD . $agentName . self::RESET . "  ");
+        $this->writeLine(self::DIM . "  [{$elapsed}] " . self::RESET . $c . self::BOLD . $agentName . self::RESET);
     }
 
     public function agentStreamEnd(): void
