@@ -105,7 +105,11 @@ final readonly class SentinelCommand implements Executable
             $tasks['daemon'] = Task::of(
                 static function (ExecutionScope $s) use ($bridge, $coordinator, $renderer): void {
                     while (!$s->isCancelled) {
-                        $s->delay(2.0);
+                        $s->delay(3.0);
+
+                        if ($coordinator->isBusy()) {
+                            continue;
+                        }
 
                         try {
                             $external = $bridge->readExternal();
@@ -117,7 +121,7 @@ final readonly class SentinelCommand implements Executable
                                 }
 
                                 $renderer->info("Incoming from {$from}: " . substr($text, 0, 80) . (strlen($text) > 80 ? '...' : ''));
-                                $coordinator->humanMessage("[EXTERNAL from {$from}]: {$text}", $s);
+                                $coordinator->externalMessage($from, $text, $s);
                             }
                         } catch (\Throwable $e) {
                             $renderer->error('Daemon poll: ' . $e->getMessage());

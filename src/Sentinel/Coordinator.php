@@ -27,6 +27,8 @@ final class Coordinator
 
     private int $reviewCount = 0;
 
+    private bool $busy = false;
+
     /**
      * @param list<ReviewAgent> $agents
      */
@@ -40,8 +42,21 @@ final class Coordinator
     /**
      * @param list<FileChange> $changes
      */
+    public function isBusy(): bool
+    {
+        return $this->busy;
+    }
+
+    public function externalMessage(string $from, string $text, ExecutionScope $scope): void
+    {
+        $this->renderer->info("External directive from {$from}");
+        $this->humanMessage("[EXTERNAL from {$from}]: {$text}", $scope);
+    }
+
     public function reviewChanges(array $changes, ExecutionScope $scope): void
     {
+        $this->busy = true;
+        try {
         $this->reviewCount++;
         $this->renderer->fileChanges($changes);
 
@@ -67,27 +82,35 @@ final class Coordinator
         }
 
         $this->renderer->reviewComplete($this->reviewCount);
+        } finally {
+            $this->busy = false;
+        }
     }
 
     public function humanMessage(string $message, ExecutionScope $scope): void
     {
-        $this->renderer->humanMessage($message);
+        $this->busy = true;
+        try {
+            $this->renderer->humanMessage($message);
 
-        $prompt = "[HUMAN SUPERVISOR]: {$message}";
-        $tasks = $this->buildResponseTasks($prompt, maxSteps: 2);
+            $prompt = $message;
+            $tasks = $this->buildResponseTasks($prompt, maxSteps: 2);
 
-        $results = $scope->concurrent($tasks);
+            $results = $scope->concurrent($tasks);
 
-        foreach ($results as $agentName => $run) {
-            $text = trim($run->text);
+            foreach ($results as $agentName => $run) {
+                $text = trim($run->text);
 
-            if ($text === '') {
-                continue;
+                if ($text === '') {
+                    continue;
+                }
+
+                $this->renderer->agentFeedback($agentName, $run->color, $text);
+                $this->appendToConversation($agentName, $prompt, $text);
+                $this->bridge?->broadcast($agentName, $text, 'human: ' . $message);
             }
-
-            $this->renderer->agentFeedback($agentName, $run->color, $text);
-            $this->appendToConversation($agentName, $prompt, $text);
-            $this->bridge?->broadcast($agentName, $text, 'human: ' . $message);
+        } finally {
+            $this->busy = false;
         }
     }
 

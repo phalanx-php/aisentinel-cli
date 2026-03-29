@@ -182,6 +182,11 @@ final class ConsoleRenderer
     public function error(string $message): void
     {
         $this->writeLine(self::FG_RED . "  [error] " . self::RESET . $message);
+        @file_put_contents(
+            getcwd() . '/sentinel-error.log',
+            '[' . date('Y-m-d H:i:s') . '] ' . $message . "\n",
+            FILE_APPEND | LOCK_EX,
+        );
     }
 
     public function shutdown(): void
