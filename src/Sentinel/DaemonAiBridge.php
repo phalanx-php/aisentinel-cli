@@ -56,6 +56,9 @@ final class DaemonAiBridge
             if (($obs['kind']['channel'] ?? '') !== 'sentinel-review') {
                 continue;
             }
+            if (($obs['data']['session'] ?? '') === $this->sessionId) {
+                continue;
+            }
 
             $external[] = $obs['data'];
         }

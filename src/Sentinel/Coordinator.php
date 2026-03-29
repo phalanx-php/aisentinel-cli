@@ -91,7 +91,7 @@ final class Coordinator
             $this->renderer->humanMessage($message);
 
             $prompt = $message;
-            $tasks = $this->buildResponseTasks($prompt, maxSteps: 2);
+            $tasks = $this->buildResponseTasks($prompt, maxSteps: 1);
 
             $results = $scope->concurrent($tasks);
 
