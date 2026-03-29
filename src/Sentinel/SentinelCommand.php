@@ -64,7 +64,7 @@ final readonly class SentinelCommand implements Executable
         $fileChanges = ProjectWatcher::watch($projectRoot, $config->debounce);
         $humanInput = StdinReader::lines();
 
-        $scope->concurrent([
+        $tasks = [
             'watcher' => Task::of(
                 static function (ExecutionScope $s) use ($fileChanges, $coordinator, $renderer): void {
                     foreach ($fileChanges($s) as $batch) {
@@ -99,7 +99,35 @@ final readonly class SentinelCommand implements Executable
                     }
                 }
             ),
-        ]);
+        ];
+
+        if ($bridge !== null) {
+            $tasks['daemon'] = Task::of(
+                static function (ExecutionScope $s) use ($bridge, $coordinator, $renderer): void {
+                    while (!$s->isCancelled) {
+                        $s->delay(2.0);
+
+                        try {
+                            $external = $bridge->readExternal();
+                            foreach ($external as $msg) {
+                                $from = $msg['from'] ?? $msg['agent'] ?? 'external';
+                                $text = $msg['message'] ?? '';
+                                if ($text === '') {
+                                    continue;
+                                }
+
+                                $renderer->info("Incoming from {$from}: " . substr($text, 0, 80) . (strlen($text) > 80 ? '...' : ''));
+                                $coordinator->humanMessage("[EXTERNAL from {$from}]: {$text}", $s);
+                            }
+                        } catch (\Throwable $e) {
+                            $renderer->error('Daemon poll: ' . $e->getMessage());
+                        }
+                    }
+                }
+            );
+        }
+
+        $scope->concurrent($tasks);
 
         $renderer->shutdown();
 
