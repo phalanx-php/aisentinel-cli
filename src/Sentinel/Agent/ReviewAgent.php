@@ -64,6 +64,11 @@ META;
         return $this->dossier->name;
     }
 
+    public function glyph(): string
+    {
+        return $this->dossier->glyph;
+    }
+
     public function color(): string
     {
         return $this->dossier->color;

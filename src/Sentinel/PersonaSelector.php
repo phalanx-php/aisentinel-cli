@@ -19,23 +19,26 @@ final class PersonaSelector
             return [];
         }
 
-        $renderer->info('Available personas:');
+        $renderer->info('Available agents:');
+        $renderer->info('');
 
         $index = 1;
         $indexMap = [];
-        foreach ($available as $filename => $displayName) {
-            $renderer->info("  {$index}) {$displayName}");
-            $indexMap[$index] = $filename;
+        foreach ($available as $lens => $persona) {
+            $glyph = ":{$persona['name']}.{$lens}>";
+            $renderer->info("  {$index}) {$glyph}  {$persona['tagline']}");
+            $indexMap[$index] = $lens;
             $index++;
         }
 
         $renderer->info('');
 
         $presetHints = [];
+        $lensKeys = array_keys($available);
         foreach (PersonaPreset::all() as $presetName => $presetFiles) {
             $nums = [];
             foreach ($presetFiles as $file) {
-                $num = array_search($file, array_values(array_keys($available)), true);
+                $num = array_search($file, $lensKeys, true);
                 if ($num !== false) {
                     $nums[] = $num + 1;
                 }
@@ -48,11 +51,11 @@ final class PersonaSelector
         $renderer->info('Presets: ' . implode(' | ', $presetHints));
         $renderer->info('');
 
-        fwrite(STDOUT, "  Select personas [numbers, preset name, or Enter for full]: ");
+        fwrite(STDOUT, "  Select agents [numbers, preset name, or Enter for all]: ");
         $line = trim((string) fgets(STDIN));
 
         if ($line === '') {
-            return array_keys($available);
+            return $lensKeys;
         }
 
         $preset = PersonaPreset::get($line);
@@ -71,25 +74,26 @@ final class PersonaSelector
             return $selected;
         }
 
-        $renderer->error("Unknown selection: {$line}. Using full preset.");
-        return array_keys($available);
+        $renderer->error("Unknown selection: {$line}. Using all.");
+        return $lensKeys;
     }
 
     public static function printAvailable(string $dossierDir, ConsoleRenderer $renderer): void
     {
         $available = self::scanPersonas($dossierDir);
 
-        $renderer->info('Available personas:');
-        foreach ($available as $filename => $displayName) {
-            $renderer->info("  {$filename}  --  {$displayName}");
+        $renderer->info('Available agents:');
+        foreach ($available as $lens => $persona) {
+            $glyph = ":{$persona['name']}.{$lens}>";
+            $renderer->info("  {$glyph}  {$persona['tagline']}");
         }
 
         $renderer->info('');
-        $renderer->info("Add custom personas to: {$dossierDir}/");
+        $renderer->info("Add custom agents to: {$dossierDir}/");
     }
 
     /**
-     * @return array<string, string> filename (without .md) => display name from # header
+     * @return array<string, array{name: string, tagline: string}> lens => persona info
      */
     private static function scanPersonas(string $dossierDir): array
     {
@@ -103,10 +107,11 @@ final class PersonaSelector
 
         $personas = [];
         foreach ($files as $file) {
-            $filename = pathinfo($file, PATHINFO_FILENAME);
+            $lens = pathinfo($file, PATHINFO_FILENAME);
             $content = file_get_contents($file);
-            $name = preg_match('/^#\s+(.+)$/m', $content, $m) ? trim($m[1]) : ucfirst($filename);
-            $personas[$filename] = $name;
+            $name = preg_match('/^#\s+(.+)$/m', $content, $m) ? trim($m[1]) : ucfirst($lens);
+            $tagline = preg_match('/^>\s*(.+)$/m', $content, $t) ? trim($t[1]) : '';
+            $personas[$lens] = ['name' => $name, 'tagline' => $tagline];
         }
 
         return $personas;

@@ -10,11 +10,11 @@ final class PersonaPreset
 {
     /** @var array<string, list<string>> preset name => persona filenames (without .md) */
     private const PRESETS = [
-        'php' => ['architect', 'performance', 'security', 'phalanx-expert'],
-        'react-native' => ['architect', 'react-state-data-integrity', 'performance', 'security'],
-        'tv' => ['tv-navigation-focus', 'vega-platform-streaming', 'react-state-data-integrity', 'performance'],
-        'core' => ['architect', 'security', 'performance'],
-        'full' => ['architect', 'performance', 'phalanx-expert', 'react-state-data-integrity', 'security', 'tv-navigation-focus', 'vega-platform-streaming'],
+        'php' => ['arch', 'perf', 'sec', 'phx'],
+        'react-native' => ['arch', 'state', 'perf', 'sec'],
+        'tv' => ['nav', 'stream', 'state', 'perf'],
+        'core' => ['arch', 'sec', 'perf'],
+        'full' => ['arch', 'perf', 'phx', 'state', 'sec', 'nav', 'stream'],
     ];
 
     /** @return list<string>|null */

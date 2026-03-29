@@ -188,7 +188,7 @@ final readonly class SentinelCommand implements Executable
             $dossier = Dossier::fromFile($file, $color);
             $agent = new ReviewAgent($dossier);
 
-            $renderer->agentRegistered($agent->name(), $color);
+            $renderer->agentRegistered($agent->glyph(), $color);
 
             $agents[] = $agent;
             $colorIndex++;

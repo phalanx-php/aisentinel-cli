@@ -8,6 +8,7 @@ final readonly class AgentRunResult
 {
     public function __construct(
         public string $name,
+        public string $glyph,
         public string $color,
         public string $text,
     ) {}

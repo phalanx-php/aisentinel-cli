@@ -6,13 +6,19 @@ namespace Phalanx\Sentinel\Agent;
 
 use InvalidArgumentException;
 
-final readonly class Dossier
+final class Dossier
 {
     public function __construct(
-        public string $name,
-        public string $instructions,
-        public string $color,
+        public readonly string $name,
+        public readonly string $lens,
+        public readonly string $tagline,
+        public readonly string $instructions,
+        public readonly string $color,
     ) {}
+
+    public string $glyph {
+        get => ":{$this->name}.{$this->lens}>";
+    }
 
     public static function fromFile(string $path, string $color): self
     {
@@ -22,8 +28,10 @@ final readonly class Dossier
 
         $content = file_get_contents($path);
         $name = self::extractName($path, $content);
+        $lens = pathinfo($path, PATHINFO_FILENAME);
+        $tagline = self::extractTagline($content);
 
-        return new self($name, trim($content), $color);
+        return new self($name, $lens, $tagline, trim($content), $color);
     }
 
     private static function extractName(string $path, string $content): string
@@ -33,5 +41,14 @@ final readonly class Dossier
         }
 
         return ucfirst(pathinfo($path, PATHINFO_FILENAME));
+    }
+
+    private static function extractTagline(string $content): string
+    {
+        if (preg_match('/^>\s*(.+)$/m', $content, $matches)) {
+            return trim($matches[1]);
+        }
+
+        return '';
     }
 }

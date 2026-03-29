@@ -75,7 +75,7 @@ final class Coordinator
                 continue;
             }
 
-            $this->renderer->agentFeedback($agentName, $run->color, $text);
+            $this->renderer->agentFeedback($run->glyph, $run->color, $text);
             $this->lastRoundFeedback[$agentName] = $text;
             $this->appendToConversation($agentName, $changeSummary, $text);
             $this->bridge?->broadcast($agentName, $text, $triggerSummary);
@@ -105,7 +105,7 @@ final class Coordinator
                     continue;
                 }
 
-                $this->renderer->agentFeedback($agentName, $run->color, $text);
+                $this->renderer->agentFeedback($run->glyph, $run->color, $text);
                 $this->appendToConversation($agentName, $prompt, $text);
                 $this->bridge?->broadcast($agentName, $text, 'human: ' . $message);
             }
@@ -123,6 +123,7 @@ final class Coordinator
 
         foreach ($this->agents as $agent) {
             $agentName = $agent->name();
+            $agentGlyph = $agent->glyph();
             $agentColor = $agent->color();
             $conversation = $this->conversationFor($agent);
             $peerContext = $this->buildPeerContext($agentName);
@@ -139,9 +140,9 @@ final class Coordinator
             $projectRoot = $this->projectRoot;
 
             $tasks[$agentName] = Task::of(
-                static function (ExecutionScope $child) use ($turn, $agentName, $agentColor, $projectRoot): AgentRunResult {
+                static function (ExecutionScope $child) use ($turn, $agentName, $agentGlyph, $agentColor, $projectRoot): AgentRunResult {
                     $child = $child->withAttribute('sentinel.project_root', $projectRoot);
-                    return self::executeAndCollect($turn, $child, $agentName, $agentColor);
+                    return self::executeAndCollect($turn, $child, $agentName, $agentGlyph, $agentColor);
                 }
             );
         }
@@ -158,6 +159,7 @@ final class Coordinator
 
         foreach ($this->agents as $agent) {
             $agentName = $agent->name();
+            $agentGlyph = $agent->glyph();
             $agentColor = $agent->color();
             $conversation = $this->conversationFor($agent);
 
@@ -169,9 +171,9 @@ final class Coordinator
             $projectRoot = $this->projectRoot;
 
             $tasks[$agentName] = Task::of(
-                static function (ExecutionScope $child) use ($turn, $agentName, $agentColor, $projectRoot): AgentRunResult {
+                static function (ExecutionScope $child) use ($turn, $agentName, $agentGlyph, $agentColor, $projectRoot): AgentRunResult {
                     $child = $child->withAttribute('sentinel.project_root', $projectRoot);
-                    return self::executeAndCollect($turn, $child, $agentName, $agentColor);
+                    return self::executeAndCollect($turn, $child, $agentName, $agentGlyph, $agentColor);
                 }
             );
         }
@@ -183,6 +185,7 @@ final class Coordinator
         Turn $turn,
         ExecutionScope $scope,
         string $agentName,
+        string $agentGlyph,
         string $agentColor,
     ): AgentRunResult {
         $events = AgentLoop::run($turn, $scope);
@@ -198,7 +201,7 @@ final class Coordinator
             }
         }
 
-        return new AgentRunResult($agentName, $agentColor, $tokenBuffer);
+        return new AgentRunResult($agentName, $agentGlyph, $agentColor, $tokenBuffer);
     }
 
     private function conversationFor(ReviewAgent $agent): Conversation
