@@ -4,7 +4,8 @@
     "type": "project",
     "license": "MIT",
     "repositories": [
-        { "type": "vcs", "url": "https://github.com/havy-tech/daemonai-php-sdk" }
+        { "type": "vcs", "url": "https://github.com/havy-tech/daemonai-php-sdk" },
+        { "type": "path", "url": "../phalanx/packages/phalanx-terminal" }
     ],
     "require": {
         "php": "^8.4",
@@ -12,6 +13,7 @@
         "phalanx/ai": "dev-main",
         "phalanx/console": "dev-main",
         "phalanx/stream": "dev-main",
+        "phalanx/terminal": "dev-main",
         "daemonai/sdk": "dev-main",
         "react/child-process": "^0.6",
         "symfony/runtime": "^7.2",
