@@ -7,11 +7,11 @@ namespace Phalanx\Sentinel;
 use Phalanx\Stream\Channel;
 use Phalanx\Stream\Contract\StreamContext;
 use Phalanx\Stream\Emitter;
-use Phalanx\Terminal\Input\EventParser;
-use Phalanx\Terminal\Input\KeyEvent;
-use Phalanx\Terminal\Input\PasteEvent;
-use Phalanx\Terminal\Terminal\SttyRawMode;
-use Phalanx\Terminal\Widget\InputLine;
+use Phalanx\Sentinel\Input\EventParser;
+use Phalanx\Sentinel\Input\InputLine;
+use Phalanx\Sentinel\Input\KeyEvent;
+use Phalanx\Sentinel\Input\PasteEvent;
+use Phalanx\Sentinel\Input\SttyRawMode;
 use React\EventLoop\Loop;
 use React\Promise\Deferred;
 
@@ -29,7 +29,7 @@ final class RawInputReader
             $rawMode->enable();
 
             $parser = new EventParser();
-            $inputLine = new InputLine(prompt: '');
+            $inputLine = new InputLine();
             $suspend = new Deferred();
             $stdin = STDIN;
 
