@@ -42,9 +42,6 @@ final class Coordinator
         $this->projectContext = self::buildProjectContext($projectRoot);
     }
 
-    /**
-     * @param list<FileChange> $changes
-     */
     public function isBusy(): bool
     {
         return $this->busy;
@@ -56,7 +53,8 @@ final class Coordinator
         try {
             $this->renderer->externalMessage($from, $text);
 
-            $tasks = $this->buildResponseTasks($prompt, maxSteps: 3);
+            $enriched = "[EXTERNAL from {$from}]: {$text}";
+            $tasks = $this->buildResponseTasks($enriched);
             $results = $scope->concurrent($tasks);
 
             foreach ($results as $run) {

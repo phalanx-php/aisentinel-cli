@@ -17,19 +17,22 @@ final class CodeBlockFormatter
 
     public function format(string $text): string
     {
+        $highlighter = $this->highlighter;
+
         return preg_replace_callback(
             '/```(\w+)(?:\s*\{([^}]+)\})?\n(.*?)```/s',
-            fn(array $m) => $this->renderBlock($m[1], $m[3], self::parseLines($m[2] ?? '')),
+            static fn(array $m) => self::renderBlock($highlighter, $m[1], $m[3], self::parseLines($m[2] ?? '')),
             $text,
         ) ?? $text;
     }
 
-    private function renderBlock(string $lang, string $code, array $highlightLines): string
+    /** @param list<int> $highlightLines */
+    private static function renderBlock(Highlighter $highlighter, string $lang, string $code, array $highlightLines): string
     {
         $code = rtrim($code);
 
         try {
-            $highlighted = $this->highlighter->parse($code, $lang);
+            $highlighted = $highlighter->parse($code, $lang);
         } catch (\Throwable) {
             $highlighted = $code;
         }

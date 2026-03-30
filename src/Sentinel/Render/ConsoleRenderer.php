@@ -84,8 +84,15 @@ final class ConsoleRenderer implements ReviewRenderer
 
     public function ready(): void
     {
-        $this->writeLine(self::FG_GREEN . "  Ready." . self::RESET . self::DIM . " Watching for changes. Type a message and press Enter to talk to agents." . self::RESET);
+        $this->writeLine(self::FG_GREEN . "  Ready." . self::RESET . self::DIM . " Watching for changes. Type a message and press Enter." . self::RESET);
         $this->writeLine(self::DIM . '  ' . str_repeat('-', 50) . self::RESET);
+        $this->writeLine(self::DIM
+            . '  ctrl+c exit'
+            . '  |  ctrl+w del word'
+            . '  |  ctrl+u clear line'
+            . '  |  opt+<> jump word'
+            . '  |  up/dn history'
+            . self::RESET);
         $this->writeLine('');
     }
 
@@ -265,7 +272,17 @@ final class ConsoleRenderer implements ReviewRenderer
     {
         static $width = null;
 
-        return $width ??= (int) (getenv('COLUMNS') ?: exec('tput cols 2>/dev/null') ?: 120);
+        if ($width !== null) {
+            return $width;
+        }
+
+        $cols = 120;
+        $stty = @exec('stty size 2>/dev/null');
+        if ($stty !== '' && $stty !== false && preg_match('/\d+ (\d+)/', $stty, $m)) {
+            $cols = (int) $m[1];
+        }
+
+        return $width = $cols;
     }
 
     /**

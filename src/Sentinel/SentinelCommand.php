@@ -98,6 +98,8 @@ final readonly class SentinelCommand implements Executable
                             $renderer->error($e->getMessage());
                         }
                     }
+
+                    $s->dispose();
                 }
             ),
         ];

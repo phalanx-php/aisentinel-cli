@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Phalanx\Sentinel;
 
+use Phalanx\Ai\Event\TokenUsage;
+use Phalanx\Ai\Message\Conversation;
+
 final readonly class AgentRunResult
 {
     public function __construct(
@@ -11,7 +14,7 @@ final readonly class AgentRunResult
         public string $glyph,
         public string $color,
         public string $text,
-        public ?\Phalanx\Ai\Message\Conversation $conversation = null,
-        public \Phalanx\Ai\Event\TokenUsage $usage = new \Phalanx\Ai\Event\TokenUsage(),
+        public ?Conversation $conversation = null,
+        public TokenUsage $usage = new TokenUsage(),
     ) {}
 }

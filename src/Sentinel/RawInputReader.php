@@ -30,7 +30,7 @@ final class RawInputReader
 
             $parser = new EventParser();
             $inputLine = new InputLine(prompt: '');
-            $done = new Deferred();
+            $suspend = new Deferred();
             $stdin = STDIN;
 
             $cleanup = static function () use ($rawMode, $stdin): void {
@@ -57,7 +57,7 @@ final class RawInputReader
             };
 
             Loop::addReadStream($stdin, static function ($stream) use (
-                $parser, $inputLine, $ch, $done, $redraw, $cleanup,
+                $parser, $inputLine, $ch, $redraw, $cleanup,
             ): void {
                 $data = @fread($stream, 8192);
                 if ($data === false || $data === '') {
@@ -80,7 +80,7 @@ final class RawInputReader
                     if ($event->ctrl && $event->is('c')) {
                         fwrite(STDOUT, "\r\n");
                         $cleanup();
-                        $done->resolve(null);
+                        Loop::stop();
                         return;
                     }
 
@@ -100,7 +100,7 @@ final class RawInputReader
 
             $redraw();
 
-            await($done->promise());
+            await($suspend->promise());
         });
     }
 }
