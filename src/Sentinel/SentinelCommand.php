@@ -27,6 +27,11 @@ final readonly class SentinelCommand implements Executable
         $options = $scope->options;
         $args = $scope->args;
 
+        if ($options->flag('help')) {
+            self::printHelp($renderer);
+            return 0;
+        }
+
         if ($options->flag('list-presets')) {
             PersonaPreset::printAll($renderer);
             return 0;
@@ -49,9 +54,9 @@ final readonly class SentinelCommand implements Executable
             return 1;
         }
 
-        $bridge = DaemonAiBridge::tryConnect($projectRoot);
+        $bridge = Daemon8Bridge::tryConnect($scope, $projectRoot);
         if ($bridge !== null) {
-            $renderer->info("DaemonAI connected (session {$bridge->sessionId})");
+            $renderer->info("daemon8 connected (session {$bridge->sessionId})");
         }
 
         $renderer->info("Custom personas: {$config->dossierDir}/");
@@ -197,5 +202,43 @@ final readonly class SentinelCommand implements Executable
         }
 
         return $agents;
+    }
+
+    private static function printHelp(ConsoleRenderer $renderer): void
+    {
+        $renderer->banner();
+
+        echo <<<'HELP'
+Usage:
+  php bin/sentinel.php [project] [options]
+
+Examples:
+  php bin/sentinel.php                              Watch cwd, pick personas interactively
+  php bin/sentinel.php ~/Code/myapp --preset php    Watch myapp with PHP-focused reviewers
+  php bin/sentinel.php . --preset core              Architect + security + performance agents
+  php bin/sentinel.php . --persona architect,security
+                                                    Cherry-pick specific personas
+  php bin/sentinel.php --list-presets               Show preset groups and their personas
+  php bin/sentinel.php --list-personas              Show all persona files in dossier dir
+
+Options:
+  -p, --preset=<name>    Persona preset: php, react-native, tv, core, full
+  --persona=<names>      Comma-separated persona names (e.g. architect,security)
+  -l, --list-presets     List available presets and their personas
+  --list-personas        List all available persona files
+  -h, --help             Show this help
+
+Interactive commands (during a session):
+  status                 Show active agents and review stats
+  exit / quit            Stop watching and shut down
+  <any text>             Send a message to all agents as supervisor input
+
+Environment (.env):
+  ANTHROPIC_API_KEY      Claude API key (required)
+  ANTHROPIC_MODEL        Model name (default: claude-haiku-4-5-20251001)
+  SENTINEL_DEBOUNCE      Change debounce in seconds (default: 0.5)
+  SENTINEL_DOSSIER_DIR   Persona directory (default: personas/)
+
+HELP;
     }
 }

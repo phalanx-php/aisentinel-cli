@@ -37,7 +37,7 @@ final class Coordinator
         private readonly array $agents,
         private readonly ReviewRenderer $renderer,
         private readonly string $projectRoot,
-        private readonly ?DaemonAiBridge $bridge = null,
+        private readonly ?Daemon8Bridge $bridge = null,
     ) {
         $this->projectContext = self::buildProjectContext($projectRoot);
     }

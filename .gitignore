@@ -1,25 +1,21 @@
-# Ignore everything by default
-*
+# Default deny: all hidden files/dirs and markdown
 .*
 *.md
 
-# Include .gitignore itself
+# Explicit includes
 !.gitignore
-
-# Include project files
+!.env.example
 !README.md
-!TODO.md
-!composer.json
-!bin/
-!bin/**
-!src/
-!src/**
-!personas/
-!personas/**
-!docs/
-!docs/**
 
-# Exclude TUI files (phalanx/terminal not published yet)
-src/Sentinel/SentinelTuiCommand.php
-src/Sentinel/Render/TuiRenderer.php
-bin/commands/sentinel-tui.php
+# Dependencies
+vendor/
+node_modules/
+
+# Build artifacts
+build/
+dist/
+coverage/
+
+# Logs
+*.log
+

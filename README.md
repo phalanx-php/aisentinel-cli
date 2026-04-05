@@ -27,7 +27,7 @@ Sentinel runs three concurrent loops in a single PHP process -- no threads, no w
 
 - **File watcher** detects changes, debounces, and emits batches
 - **Input reader** handles raw terminal input with readline-style editing
-- **DaemonAI poller** picks up cross-agent observations in real time (optional)
+- **daemon8 poller** picks up cross-agent observations in real time (optional)
 
 When a change arrives, every active agent reviews it in parallel through Phalanx's fiber-based concurrency:
 
@@ -87,11 +87,11 @@ php bin/sentinel.php sentinel /path/to/project --preset php
 
 Or pick individual agents interactively when you omit `--preset`.
 
-## Real-Time Coordination with DaemonAI
+## Real-Time Coordination with daemon8
 
-Sentinel uses [DaemonAI](https://daemonai.havy.tech) as its runtime observation layer. When agents find something, they broadcast it. Other agents -- even in separate terminal sessions on the same project -- pick up those findings and build on them instead of duplicating work.
+Sentinel uses [daemon8](https://daemon8.ai) as its runtime observation layer. When agents find something, they broadcast it. Other agents -- even in separate terminal sessions on the same project -- pick up those findings and build on them instead of duplicating work.
 
-DaemonAI is a Rust-based runtime bridge that connects directly to Chrome via CDP. No browser extension. It gives your terminal direct access to the browser's internals:
+daemon8 is a Rust-based runtime bridge that connects directly to Chrome via CDP. No browser extension. It gives your terminal direct access to the browser's internals:
 
 - Execute JavaScript and read console output from the command line
 - Take ephemeral screenshots without touching the browser
@@ -99,7 +99,7 @@ DaemonAI is a Rust-based runtime bridge that connects directly to Chrome via CDP
 - Emulate mobile viewports for responsive debugging
 - Coordinate multiple agents through shared observation channels
 
-Sentinel works without DaemonAI (the bridge gracefully degrades), but cross-session coordination requires it. DaemonAI is a separate tool at **$49/year** -- [daemonai.havy.tech](https://daemonai.havy.tech).
+Sentinel works without daemon8 (the bridge gracefully degrades), but cross-session coordination requires it. daemon8 is a separate tool at **$49/year** -- [daemon8.ai](https://daemon8.ai).
 
 ## Built on Phalanx
 
@@ -123,4 +123,4 @@ We'd genuinely appreciate people trying Sentinel out and sharing feedback -- wha
 - PHP 8.4+
 - `fswatch` (`brew install fswatch` / `apt install fswatch`)
 - An Anthropic API key (OpenAI support exists but Anthropic is the primary target)
-- [DaemonAI](https://daemonai.havy.tech) for cross-session agent coordination (optional, $49/year)
+- [daemon8](https://daemon8.ai) for cross-session agent coordination (optional, $49/year)

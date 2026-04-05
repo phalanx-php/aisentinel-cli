@@ -4,15 +4,21 @@
     "type": "project",
     "license": "MIT",
     "repositories": [
-        { "type": "vcs", "url": "https://github.com/havy-tech/daemonai-php-sdk" }
+        { "type": "path", "url": "../phalanx/packages/phalanx-core",    "options": { "symlink": true } },
+        { "type": "path", "url": "../phalanx/packages/phalanx-console",  "options": { "symlink": true } },
+        { "type": "path", "url": "../phalanx/packages/phalanx-stream",   "options": { "symlink": true } },
+        { "type": "path", "url": "../phalanx/packages/phalanx-ai",       "options": { "symlink": true } },
+        { "type": "path", "url": "../phalanx/packages/phalanx-terminal", "options": { "symlink": true } },
+        { "type": "vcs",  "url": "https://github.com/havy-tech/daemon8-php-sdk" }
     ],
     "require": {
         "php": "^8.4",
-        "phalanx/core": "^0.3",
-        "phalanx/ai": "^0.3",
-        "phalanx/console": "^0.3",
-        "phalanx/stream": "^0.3",
-        "daemonai/sdk": "dev-main",
+        "phalanx/core": "*",
+        "phalanx/ai": "*",
+        "phalanx/console": "*",
+        "phalanx/stream": "*",
+        "phalanx/terminal": "*",
+        "havy-tech/daemon8": "dev-main",
         "react/child-process": "^0.6",
         "symfony/runtime": "^7.2",
         "symfony/dotenv": "^7.2",

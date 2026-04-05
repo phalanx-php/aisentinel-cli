@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace Phalanx\Sentinel;
 
-use DaemonAI\Daemon;
+use Daemon8\Daemon;
+use Phalanx\Suspendable;
 use Psr\Http\Message\ResponseInterface;
 use React\Http\Browser;
 
-use function React\Async\await;
-
-final class DaemonAiBridge
+final class Daemon8Bridge
 {
     private int $checkpoint = 0;
 
@@ -21,6 +20,7 @@ final class DaemonAiBridge
     private readonly string $baseUrl;
 
     public function __construct(
+        private readonly Suspendable $scope,
         private readonly string $projectPath,
         string $baseUrl = 'http://127.0.0.1:9077',
     ) {
@@ -31,7 +31,7 @@ final class DaemonAiBridge
             ->withRejectErrorResponse(false);
 
         /** @var ResponseInterface $response */
-        $response = await($this->browser->get($this->baseUrl . '/api/observe?limit=0'));
+        $response = $this->scope->await($this->browser->get($this->baseUrl . '/api/observe?limit=0'));
 
         if ($response->getStatusCode() < 400) {
             $data = json_decode((string) $response->getBody(), true);
@@ -65,7 +65,7 @@ final class DaemonAiBridge
         ]);
 
         /** @var ResponseInterface $response */
-        $response = await($this->browser->get($url));
+        $response = $this->scope->await($this->browser->get($url));
 
         if ($response->getStatusCode() >= 400) {
             return [];
@@ -96,18 +96,19 @@ final class DaemonAiBridge
     }
 
     public static function tryConnect(
+        Suspendable $scope,
         string $projectPath,
         string $baseUrl = 'http://127.0.0.1:9077',
     ): ?self {
         try {
             $browser = (new Browser())->withTimeout(2.0);
-            $response = await($browser->get($baseUrl . '/health'));
+            $response = $scope->await($browser->get($baseUrl . '/health'));
 
             if ((string) $response->getBody() !== 'ok') {
                 return null;
             }
 
-            return new self($projectPath, $baseUrl);
+            return new self($scope, $projectPath, $baseUrl);
         } catch (\Throwable) {
             return null;
         }

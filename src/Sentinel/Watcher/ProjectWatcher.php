@@ -11,7 +11,6 @@ use React\ChildProcess\Process;
 use React\EventLoop\Loop;
 use React\Promise\Deferred;
 
-use function React\Async\await;
 
 final class ProjectWatcher
 {
@@ -122,7 +121,7 @@ final class ProjectWatcher
                 $done->resolve(null);
             });
 
-            await($done->promise());
+            $ctx->await($done->promise());
         });
     }
 

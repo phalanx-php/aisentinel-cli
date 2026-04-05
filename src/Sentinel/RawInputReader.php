@@ -15,7 +15,6 @@ use Phalanx\Sentinel\Input\SttyRawMode;
 use React\EventLoop\Loop;
 use React\Promise\Deferred;
 
-use function React\Async\await;
 
 final class RawInputReader
 {
@@ -100,7 +99,7 @@ final class RawInputReader
 
             $redraw();
 
-            await($suspend->promise());
+            $ctx->await($suspend->promise());
         });
     }
 }

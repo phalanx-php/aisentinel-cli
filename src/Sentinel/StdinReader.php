@@ -11,7 +11,6 @@ use React\EventLoop\Loop;
 use React\Promise\Deferred;
 use React\Stream\ReadableResourceStream;
 
-use function React\Async\await;
 
 final class StdinReader
 {
@@ -49,7 +48,7 @@ final class StdinReader
                 $stdin->close();
             });
 
-            await($done->promise());
+            $ctx->await($done->promise());
         });
     }
 }
