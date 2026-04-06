@@ -4,11 +4,11 @@
     "type": "project",
     "license": "MIT",
     "repositories": [
-        { "type": "path", "url": "../phalanx/packages/phalanx-core",    "options": { "symlink": true } },
-        { "type": "path", "url": "../phalanx/packages/phalanx-console",  "options": { "symlink": true } },
-        { "type": "path", "url": "../phalanx/packages/phalanx-stream",   "options": { "symlink": true } },
-        { "type": "path", "url": "../phalanx/packages/phalanx-ai",       "options": { "symlink": true } },
-        { "type": "path", "url": "../phalanx/packages/phalanx-terminal", "options": { "symlink": true } },
+        { "type": "path", "url": "../../phalanx/packages/phalanx-core",    "options": { "symlink": true } },
+        { "type": "path", "url": "../../phalanx/packages/phalanx-console",  "options": { "symlink": true } },
+        { "type": "path", "url": "../../phalanx/packages/phalanx-stream",   "options": { "symlink": true } },
+        { "type": "path", "url": "../../phalanx/packages/phalanx-ai",       "options": { "symlink": true } },
+        { "type": "path", "url": "../../phalanx/packages/phalanx-terminal", "options": { "symlink": true } },
         { "type": "vcs",  "url": "https://github.com/havy-tech/daemon8-php-sdk" }
     ],
     "require": {
