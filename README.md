@@ -89,7 +89,7 @@ Or pick individual agents interactively when you omit `--preset`.
 
 ## Real-Time Coordination with daemon8
 
-Sentinel uses [daemon8](https://daemon8.ai) as its runtime observation layer. When agents find something, they broadcast it. Other agents -- even in separate terminal sessions on the same project -- pick up those findings and build on them instead of duplicating work.
+Sentinel uses [daemon8](https://github.com/daemon8ai/daemon8) as its runtime observation layer. When agents find something, they broadcast it. Other agents -- even in separate terminal sessions on the same project -- pick up those findings and build on them instead of duplicating work.
 
 daemon8 is a Rust-based runtime bridge that connects directly to Chrome via CDP. No browser extension. It gives your terminal direct access to the browser's internals:
 
@@ -99,7 +99,7 @@ daemon8 is a Rust-based runtime bridge that connects directly to Chrome via CDP.
 - Emulate mobile viewports for responsive debugging
 - Coordinate multiple agents through shared observation channels
 
-Sentinel works without daemon8 (the bridge gracefully degrades), but cross-session coordination requires it. daemon8 is a separate tool at **$49/year** -- [daemon8.ai](https://daemon8.ai).
+Sentinel works without daemon8 (the bridge gracefully degrades), but cross-session coordination requires it. daemon8 is a separate tool at **$49/year** -- [daemon8.ai](https://github.com/daemon8ai/daemon8).
 
 ## Built on Phalanx
 
@@ -123,4 +123,4 @@ We'd genuinely appreciate people trying Sentinel out and sharing feedback -- wha
 - PHP 8.4+
 - `fswatch` (`brew install fswatch` / `apt install fswatch`)
 - An Anthropic API key (OpenAI support exists but Anthropic is the primary target)
-- [daemon8](https://daemon8.ai) for cross-session agent coordination (optional, $49/year)
+- [daemon8](https://github.com/daemon8ai/daemon8) for cross-session agent coordination (optional, $49/year)
